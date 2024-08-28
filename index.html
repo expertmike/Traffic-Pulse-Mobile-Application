@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TrafficPulse</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f0f4f8;
+        }
+        header {
+            background-color: #007bff;
+            color: white;
+            padding: 15px;
+            text-align: center;
+        }
+        .container {
+            max-width: 100%;
+            margin: 0 auto;
+            padding: 15px;
+        }
+        .map {
+            height: 200px;
+            width: 100%;
+            background-color: #e0e0e0;
+            margin-bottom: 20px;
+            position: relative;
+            border-radius: 8px;
+        }
+        .section {
+            background: white;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 10px 0;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        h2 {
+            margin-top: 0;
+            color: #007bff;
+            font-size: 18px;
+        }
+        .input-group {
+            margin-bottom: 15px;
+        }
+        .input-group label {
+            display: block;
+            margin-bottom: 5px;
+            color: #333;
+            font-size: 14px;
+        }
+        .input-group input, .input-group select, .input-group button {
+            width: 100%;
+            padding: 10px;
+            font-size: 14px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        .input-group button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        .input-group button:hover {
+            background-color: #0056b3;
+        }
+        .notifications, .dashboard {
+            list-style: none;
+            padding: 0;
+        }
+        .notifications li, .dashboard li {
+            margin-bottom: 10px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            background-color: #f8f9fa;
+            font-size: 14px;
+        }
+        .live-traffic-links {
+            margin: 20px 0;
+        }
+        .live-traffic-links a {
+            display: block;
+            margin-bottom: 10px;
+            color: #007bff;
+            text-decoration: none;
+            font-size: 14px;
+        }
+        .live-traffic-links a:hover {
+            text-decoration: underline;
+        }
+        @media (max-width: 768px) {
+            .map {
+                height: 150px;
+            }
+            .input-group input, .input-group select, .input-group button {
+                font-size: 12px;
+            }
+            h2 {
+                font-size: 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>TrafficPulse</h1>
+</header>
+
+<div class="container">
+    <!-- Interactive Map -->
+    <div class="map" id="map">
+        <p>Map placeholder</p>
+    </div>
+
+    <!-- Incident Reporting -->
+    <div class="section">
+        <h2>Report Traffic Incident</h2>
+        <div class="input-group">
+            <label for="incident-type">Incident Type</label>
+            <select id="incident-type">
+                <option value="accident">Accident</option>
+                <option value="road-closure">Road Closure</option>
+                <option value="construction">Construction</option>
+            </select>
+        </div>
+        <div class="input-group">
+            <label for="incident-details">Details</label>
+            <input type="text" id="incident-details" placeholder="Enter details of the incident">
+        </div>
+        <div class="input-group">
+            <button onclick="reportIncident()">Report Incident</button>
+        </div>
+    </div>
+
+    <!-- Route Planning -->
+    <div class="section">
+        <h2>Plan Your Route</h2>
+        <div class="input-group">
+            <label for="start-location">Start Location</label>
+            <input type="text" id="start-location" placeholder="Enter your start location">
+        </div>
+        <div class="input-group">
+            <label for="end-location">End Location</label>
+            <input type="text" id="end-location" placeholder="Enter your destination">
+        </div>
+        <div class="input-group">
+            <button onclick="planRoute()">Find Route</button>
+        </div>
+    </div>
+
+    <!-- Notifications -->
+    <div class="section">
+        <h2>Notifications</h2>
+        <ul class="notifications" id="notifications">
+            <li>No notifications yet.</li>
+        </ul>
+    </div>
+
+    <!-- User Dashboard -->
+    <div class="section">
+        <h2>User Dashboard</h2>
+        <ul class="dashboard" id="dashboard">
+            <li>Current Location: <span id="current-location">Not set</span></li>
+            <li>Recent Routes:
+                <ul id="recent-routes">
+                    <li>No recent routes.</li>
+                </ul>
+            </li>
+            <li>Reported Incidents:
+                <ul id="reported-incidents">
+                    <li>No incidents reported.</li>
+                </ul>
+            </li>
+        </ul>
+    </div>
+
+    <!-- Live Traffic Links -->
+    <div class="section live-traffic-links">
+        <h2>Live Traffic Information</h2>
+        <a href="https://example.com/thika-road" target="_blank">Thika Road</a>
+        <a href="https://example.com/mombasa-road" target="_blank">Mombasa Road</a>
+        <a href="https://example.com/waiyaki-way" target="_blank">Waiyaki Way</a>
+        <a href="https://example.com/jogoo-road" target="_blank">Jogoo Road</a>
+        <a href="https://example.com/langata-road" target="_blank">Lang'ata Road</a>
+        <a href="https://example.com/southern-bypass" target="_blank">Southern Bypass</a>
+        <a href="https://example.com/limuru-road" target="_blank">Limuru Road</a>
+    </div>
+</div>
+
+<script>
+    function reportIncident() {
+        const incidentType = document.getElementById('incident-type').value;
+        const incidentDetails = document.getElementById('incident-details').value;
+        const notification = `Incident Reported: ${incidentType} - ${incidentDetails}`;
+
+        const notifications = document.getElementById('notifications');
+        const newNotification = document.createElement('li');
+        newNotification.textContent = notification;
+        notifications.appendChild(newNotification);
+
+        // Add to reported incidents list
+        const reportedIncidents = document.getElementById('reported-incidents');
+        const newIncident = document.createElement('li');
+        newIncident.textContent = notification;
+        reportedIncidents.appendChild(newIncident);
+
+        // Clear input fields
+        document.getElementById('incident-details').value = '';
+    }
+
+    function planRoute() {
+        const startLocation = document.getElementById('start-location').value;
+        const endLocation = document.getElementById('end-location').value;
+        const routeInfo = `Route from ${startLocation} to ${endLocation}`;
+
+        // Display route info (this is a placeholder)
+        alert(`Planning route: ${routeInfo}`);
+
+        // Add to recent routes list
+        const recentRoutes = document.getElementById('recent-routes');
+        const newRoute = document.createElement('li');
+        newRoute.textContent = routeInfo;
+        recentRoutes.appendChild(newRoute);
+
+        // Clear input fields
+        document.getElementById('start-location').value = '';
+        document.getElementById('end-location').value = '';
+    }
+</script>
+
+</body>
+</html>
